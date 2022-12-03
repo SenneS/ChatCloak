@@ -1,0 +1,30 @@
+class Contact
+-> Id
+-> Name
+-> PrivateKey pp?
+-> SharedKey pp?
+
+class Self
+-> Id
+-> Name
+
+class Session
+-> mySignKey
+-> theirSignKey
+-> myDataKey
+-> theirdataKey
+-> timestamp
+
+class Message
+-> timestamp
+-> content
+
+Message Header
+[type][signed][size][message sign -> hash of message content signed with signKey][message content -> encrypted with dataKey]
+
+Flow:
+bio auth -> (account creation)? -> (broadcasting?)
+generate key -> derive & send public key -> receive public key -> derive shared secret?
+
+Jetpack Room
+Jetpack Compose / Flutter?
