@@ -13,3 +13,6 @@
 [submodule "demos/room_demo"]
 	path = demos/room_demo
 	url = https://github.com/SenneS/room_demo
+[submodule "demos/navigation_demo"]
+	path = demos/navigation_demo
+	url = https://github.com/SenneS/navigation_demo
