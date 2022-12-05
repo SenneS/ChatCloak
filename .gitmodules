@@ -16,3 +16,6 @@
 [submodule "demos/navigation_demo"]
 	path = demos/navigation_demo
 	url = https://github.com/SenneS/navigation_demo
+[submodule "demos/qr_demo"]
+	path = demos/qr_demo
+	url = https://github.com/SenneS/qr_demo
