@@ -1,3 +1,12 @@
 [submodule "demos/kotlin_demo"]
 	path = demos/kotlin_demo
 	url = https://github.com/SenneS/kotlin_demo
+[submodule "demos/android_basic_demo"]
+	path = demos/android_basic_demo
+	url = https://github.com/SenneS/android_basic_demo
+[submodule "demos/cryptography_demo"]
+	path = demos/cryptography_demo
+	url = https://github.com/SenneS/cryptography_demo
+[submodule "demos/communication_demo"]
+	path = demos/communication_demo
+	url = https://github.com/SenneS/communication_demo
