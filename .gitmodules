@@ -19,3 +19,6 @@
 [submodule "demos/qr_demo"]
 	path = demos/qr_demo
 	url = https://github.com/SenneS/qr_demo
+[submodule "demos/broadcast_demo"]
+	path = demos/broadcast_demo
+	url = https://github.com/SenneS/broadcast_demo
