@@ -1,4 +1,6 @@
 package be.senne.chatcloak.viewmodel
 
-class EstablishConnectionVM {
+import androidx.lifecycle.ViewModel
+
+class EstablishConnectionVM : ViewModel() {
 }
