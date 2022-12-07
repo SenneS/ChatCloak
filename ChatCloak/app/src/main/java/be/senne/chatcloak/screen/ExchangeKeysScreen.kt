@@ -27,16 +27,16 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import be.senne.chatcloak.KeyContainer
 import be.senne.chatcloak.QrScannerAnalyzer
 import be.senne.chatcloak.viewmodel.ExchangeKeysVM
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import org.bouncycastle.jce.provider.BouncyCastleProvider
-import java.security.Security
 
 @Composable
-fun createExchangeKeysScreen(vm : ExchangeKeysVM = viewModel()) {
+fun createExchangeKeysScreen(nav: NavController, vm : ExchangeKeysVM = viewModel()) {
     val tabs = listOf("public_key", "scanner")
     val tabIdx = remember { mutableStateOf(0) }
     val nextEnabled = remember { mutableStateOf(false) }
@@ -46,7 +46,10 @@ fun createExchangeKeysScreen(vm : ExchangeKeysVM = viewModel()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Exchange Keys")
                 Spacer(Modifier.weight(1f))
-                Button(onClick = { /*TODO*/ }, enabled = nextEnabled.value) {
+                Button(onClick = {
+                    val kc = KeyContainer(vm.key, vm.publicKey)
+                    nav.navigate("establish_connection_screen/$kc")
+                                 }, enabled = nextEnabled.value) {
                     Text("Next")
                 }
             }

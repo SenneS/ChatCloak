@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import be.senne.chatcloak.compose.navigation
 import be.senne.chatcloak.screen.createExchangeKeysScreen
 import be.senne.chatcloak.ui.theme.ChatCloakTheme
 import org.bouncycastle.jce.provider.BouncyCastleProvider
@@ -37,7 +38,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    createExchangeKeysScreen()
+                    navigation()
                 }
             }
         }
