@@ -47,15 +47,25 @@ fun createEstablishConnectionScreen(nav: NavController, key_container : KeyConta
         AlertDialog(
             title = {Text("Connection Type")},
             text = { Text(text = "Select whether you want to be the host of the conversation or the client (whatever you pick should be the opposite of what your friend picked/picks")},
-            onDismissRequest = { /*TODO*/ },
+            onDismissRequest = {
+                               openAlert.value = false
+            },
             confirmButton = {
                             Button(onClick = {
-                                nav.navigate("")
+                                val kc = KeyContainer(vm.key, vm.publicKey)
+                                val ip = vm.ip
+                                val is_host = true
+                                nav.navigate("chat_screen/$kc/$ip/$is_host")
                             }) {
                                 Text(text = "Host")
                             }
         }, dismissButton = {
-                            Button(onClick = { /*TODO*/ }) {
+                            Button(onClick = {
+                                val kc = KeyContainer(vm.key, vm.publicKey)
+                                val ip = vm.ip
+                                val is_host = false
+                                nav.navigate("chat_screen/$kc/$ip/$is_host")
+                            }) {
                                 Text(text = "Client")
                             }
         })
@@ -67,7 +77,7 @@ fun createEstablishConnectionScreen(nav: NavController, key_container : KeyConta
                 Text("Establish Connection")
                 Spacer(Modifier.weight(1f))
                 Button(onClick = {
-
+                                 openAlert.value = true
                 }, enabled = nextEnabled.value) {
                     Text("Next")
                 }
@@ -84,7 +94,12 @@ fun createEstablishConnectionScreen(nav: NavController, key_container : KeyConta
                 value = text,
                 onValueChange = { tfv ->
                     text = tfv
-                    nextEnabled.value = checkifValidIp(tfv.text)
+                    if(checkifValidIp(tfv.text)) {
+                        nextEnabled.value = true
+                        vm.ip = tfv.text
+                    }else {
+                        nextEnabled.value = false
+                    }
                 },
                 label = { Text(text = "Your friend's IP address") },
                 placeholder = { Text(text = "192.168.1.12") },

@@ -7,5 +7,6 @@ class EstablishConnectionVM : ViewModel() {
 
     lateinit var key : KeyPair
     lateinit var publicKey : String
+    lateinit var ip : String
 
 }

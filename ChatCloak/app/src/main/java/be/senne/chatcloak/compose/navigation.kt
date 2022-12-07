@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import be.senne.chatcloak.KeyContainer
 import be.senne.chatcloak.KeyPairType
+import be.senne.chatcloak.screen.createChatScreen
 import be.senne.chatcloak.screen.createEstablishConnectionScreen
 import be.senne.chatcloak.screen.createExchangeKeysScreen
 import com.google.gson.Gson
@@ -50,9 +51,13 @@ fun navigation() {
             }
         }
 
-        composable("chat_screen", arguments = listOf(
+        composable("chat_screen/{key_container}/{ip}/{is_host}", arguments = listOf(
             navArgument("key_container") {
                 type = KeyPairType()
+                nullable = false
+            },
+            navArgument("ip") {
+                type = NavType.StringType
                 nullable = false
             },
             navArgument("is_host") {
@@ -63,6 +68,15 @@ fun navigation() {
             BackHandler(enabled = true) {
                 navController.navigate("exchange_keys_screen")
             }
+
+            val key_container = it.arguments?.getParcelable<KeyContainer>("key_container")
+            val ip = it.arguments?.getString("ip")
+            val is_host = it.arguments?.getBoolean("is_host")
+            if(key_container != null && is_host != null && ip != null) {
+                createChatScreen(nav = navController, key_container = key_container, ip= ip, is_host = is_host)
+            }
+
+
         }
 
 
