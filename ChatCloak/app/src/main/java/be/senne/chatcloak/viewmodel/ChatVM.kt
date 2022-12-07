@@ -1,10 +1,22 @@
 package be.senne.chatcloak.viewmodel
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import be.senne.chatcloak.KeyContainer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.withContext
 import org.bouncycastle.jce.interfaces.ECPublicKey
 import java.io.DataInputStream
 import java.io.DataOutputStream
+import java.net.InetSocketAddress
 import java.net.ServerSocket
 import java.net.Socket
 import java.security.KeyFactory
@@ -24,31 +36,70 @@ class ChatVM : ViewModel() {
     lateinit var sessionKey : ByteArray
     lateinit var sessionIv : ByteArray
 
+    lateinit var networkMutex : Mutex
+    lateinit var networkJob : Job
+
     var isHost : Boolean = false
+
+    private val _messagesState = mutableStateListOf<Message>()
+    val messages: List<Message> = _messagesState
 
     lateinit var dataInputStream : DataInputStream
     lateinit var dataOutputStream : DataOutputStream
 
-    fun setupConnection() {
-        if(isHost) {
-            val serverSocket = ServerSocket(21576)
-            connectionSocket = serverSocket.accept()
+    fun setupConnection(onSuccess: () -> Unit, onFailure: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                if (isHost) {
+                    val serverSocket = ServerSocket(21576)
+                    connectionSocket = serverSocket.accept()
 
-            dataInputStream = DataInputStream(connectionSocket.getInputStream())
-            dataOutputStream = DataOutputStream(connectionSocket.getOutputStream())
-        }
-        else {
-            connectionSocket = Socket(friendIp, 21576)
-            dataInputStream = DataInputStream(connectionSocket.getInputStream())
-            dataOutputStream = DataOutputStream(connectionSocket.getOutputStream())
+                    dataInputStream = DataInputStream(connectionSocket.getInputStream())
+                    dataOutputStream = DataOutputStream(connectionSocket.getOutputStream())
+                } else {
+                    connectionSocket = Socket()
+                    connectionSocket.connect(InetSocketAddress(friendIp, 21576), 10000)
+                    dataInputStream = DataInputStream(connectionSocket.getInputStream())
+                    dataOutputStream = DataOutputStream(connectionSocket.getOutputStream())
+                }
+                withContext(Dispatchers.Main) {
+                    onSuccess()
+                }
+
+
+            }
+            catch(_ : Exception) {
+                withContext(Dispatchers.Main) {
+                    onFailure()
+                }
+            }
         }
     }
 
+    fun startListener() {
+        networkJob = viewModelScope.launch(Dispatchers.IO) {
+           while(true) {
+               val packetLength = dataInputStream.readInt()
+               val encryptedMsg = ByteArray(packetLength)
+               dataInputStream.read(encryptedMsg, 0, packetLength)
+               val decryptedMsg = cbcDecrypt(encryptedMsg, sessionKey, sessionIv)
+
+               _messagesState.add(Message(decryptedMsg.decodeToString(), false))
+
+           }
+        }
+    }
+
+
     fun sendMessage(str : String) {
-        val encryptedMessage = cbcEncrypt(str.encodeToByteArray(), sessionKey, sessionIv)
-        println("sending packet with size ${encryptedMessage.size}")
-        dataOutputStream.writeInt(encryptedMessage.size)
-        dataOutputStream.write(encryptedMessage)
+        viewModelScope.launch(Dispatchers.IO) {
+            val encryptedMessage = cbcEncrypt(str.encodeToByteArray(), sessionKey, sessionIv)
+            println("sending packet with size ${encryptedMessage.size}")
+            dataOutputStream.writeInt(encryptedMessage.size)
+            dataOutputStream.write(encryptedMessage)
+
+            _messagesState.add(Message(str, true))
+        }
     }
 
     fun generateSessionKey() {
@@ -104,3 +155,5 @@ class ChatVM : ViewModel() {
     }
 
 }
+
+data class Message(val content : String, val mine : Boolean)
