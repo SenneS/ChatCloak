@@ -57,6 +57,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
+/*
 @Preview
 @Composable
 fun ChatList() {
@@ -74,34 +76,4 @@ fun ChatList() {
         }
     }
 }
-
-@Composable
-fun MessageItem(msg : Message) {
-    val alignment = if(msg.mine) Alignment.CenterEnd else Alignment.CenterStart
-    val background = if(msg.mine) Color.Green else Color.LightGray
-    
-    Row() {
-        if(msg.mine) {
-            Spacer(modifier = Modifier.weight(1f))
-        }
-        Column(modifier = Modifier.padding(4.dp).background(background).padding(5.dp).requiredWidth(100.dp), horizontalAlignment = Alignment.Start) {
-            Text(text = msg.content, textAlign = TextAlign.Center)
-        }
-        if(!msg.mine) {
-            Spacer(modifier = Modifier.weight(1f))
-        }
-    }
-
-    /*
-    Box(modifier = Modifier.fillMaxSize()) {
-        Box(
-            modifier = Modifier
-                .background(background)
-                .fillMaxWidth(0.33f)
-                .fillMaxSize()
-                .clip(RoundedCornerShape(50.dp))
-        ) {
-            Text(text = msg.content, Modifier.align(alignment))
-        }
-    }*/
-}
+*/
