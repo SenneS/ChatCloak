@@ -1,12 +1,11 @@
 package be.senne.chatcloak.viewmodel
 
 import androidx.lifecycle.ViewModel
-import java.security.KeyPair
+import be.senne.chatcloak.KeyContainer
 
 class EstablishConnectionVM : ViewModel() {
 
-    lateinit var key : KeyPair
-    lateinit var publicKey : String
+    lateinit var key_container : KeyContainer
     lateinit var ip : String
 
 }

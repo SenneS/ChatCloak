@@ -34,6 +34,10 @@ import be.senne.chatcloak.viewmodel.ExchangeKeysVM
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import org.bouncycastle.jce.interfaces.ECPrivateKey
+import org.bouncycastle.jce.interfaces.ECPublicKey
+import java.security.KeyFactory
+import java.security.spec.X509EncodedKeySpec
 
 @Composable
 fun createExchangeKeysScreen(nav: NavController, vm : ExchangeKeysVM = viewModel()) {
@@ -47,7 +51,14 @@ fun createExchangeKeysScreen(nav: NavController, vm : ExchangeKeysVM = viewModel
                 Text("Exchange Keys")
                 Spacer(Modifier.weight(1f))
                 Button(onClick = {
-                    val kc = KeyContainer(vm.key, vm.publicKey)
+
+                    val theirPublicKeyBytes = java.util.Base64.getDecoder().decode(vm.publicKey)
+                    val keyFactory = KeyFactory.getInstance("ECDH", "BC")
+                    val theirPublicKey = keyFactory.generatePublic(X509EncodedKeySpec(theirPublicKeyBytes)) as ECPublicKey
+
+
+                    val kc = KeyContainer(vm.key.private.encoded,
+                        vm.key.public.encoded, theirPublicKey.encoded)
                     nav.navigate("establish_connection_screen/$kc")
                                  }, enabled = nextEnabled.value) {
                     Text("Next")

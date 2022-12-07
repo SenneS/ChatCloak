@@ -29,6 +29,8 @@ class ExchangeKeysVM() : ViewModel() {
         val keygen = KeyPairGenerator.getInstance("ECDH", "BC")
         keygen.initialize(ecParameter, SecureRandom())
         key = keygen.genKeyPair()
+
+        val encodedKey = key.private.encoded
     }
 
     fun generateQrCode() : ImageBitmap {

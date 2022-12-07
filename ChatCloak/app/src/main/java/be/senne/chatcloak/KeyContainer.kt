@@ -6,10 +6,12 @@ import android.os.Parcelable
 import androidx.navigation.NavType
 import com.google.gson.Gson
 import kotlinx.android.parcel.Parcelize
+import org.bouncycastle.jce.interfaces.ECPrivateKey
+import org.bouncycastle.jce.interfaces.ECPublicKey
 import java.security.KeyPair
 
 @Parcelize
-data class KeyContainer(val myKeys : KeyPair, val theirKey : String) : Parcelable {
+data class KeyContainer(val private : ByteArray, val public : ByteArray, val theirPublicKey : ByteArray) : Parcelable {
     override fun toString(): String {
         return Uri.encode(Gson().toJson(this))
     }

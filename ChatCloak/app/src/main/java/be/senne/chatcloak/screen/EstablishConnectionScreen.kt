@@ -37,8 +37,7 @@ private fun checkifValidIp(ip : String) : Boolean {
 @Composable
 fun createEstablishConnectionScreen(nav: NavController, key_container : KeyContainer, vm : EstablishConnectionVM = viewModel()) {
 
-    vm.key = key_container.myKeys
-    vm.publicKey = key_container.theirKey
+    vm.key_container = key_container
 
     val openAlert =  remember { mutableStateOf(false) }
     val nextEnabled = remember { mutableStateOf(false) }
@@ -52,7 +51,7 @@ fun createEstablishConnectionScreen(nav: NavController, key_container : KeyConta
             },
             confirmButton = {
                             Button(onClick = {
-                                val kc = KeyContainer(vm.key, vm.publicKey)
+                                val kc = vm.key_container
                                 val ip = vm.ip
                                 val is_host = true
                                 nav.navigate("chat_screen/$kc/$ip/$is_host")
@@ -61,7 +60,7 @@ fun createEstablishConnectionScreen(nav: NavController, key_container : KeyConta
                             }
         }, dismissButton = {
                             Button(onClick = {
-                                val kc = KeyContainer(vm.key, vm.publicKey)
+                                val kc = vm.key_container
                                 val ip = vm.ip
                                 val is_host = false
                                 nav.navigate("chat_screen/$kc/$ip/$is_host")
